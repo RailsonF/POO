@@ -45,7 +45,7 @@ class Adm(Pessoa, Livro):
     def cad_emprestimo(self, nome, titulo):
         self.nome = nome
         self.titulo = titulo
-        return f"Livro: {self.titulo} emprestado para o usuário {self.nome}"
+        return f"Livro: {self.nome} emprestado para o usuário {self.titulo}"
     
         
         
