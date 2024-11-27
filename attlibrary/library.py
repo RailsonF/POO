@@ -3,59 +3,90 @@ class Pessoa:
         self.nome = nome
         self.idade = idade
         self._num_matricula = _num_matricula
-    #def __str__(self):   
-        #return f"Usuário {self.nome} cadastrado com sucesso!!"
+    
+    #def __str__(self):
+        #return f"Usuário {self.nome} cadastrado com sucesso"
+    
+    
 class Livro:
-    def __init__(self, titulo, autor, ano_publi, status_disponibilidade):
-        self.titulo = []
+    def __init__(self, titulo, autor, ano_publi, status_disponibilidade="disponivel"):
+        self.titulo = titulo
         self.autor = autor
         self.ano_publi = ano_publi
         self.status_disponibilidade = status_disponibilidade
-
-class UsuarioComum(Pessoa, Livro):
-    def __init__(self, nome, idade, _num_matricula, lendo_livro):
-        super().__init__(nome, idade, _num_matricula)
-        self.nome = nome
-        self.idade = idade
-        self._num_matricula = _num_matricula
-        self.lendo_livro = []
         
+    def __str__(self):
+        return f"Título: {self.titulo}, Autor: {self.autor}, Ano: {self.ano_publi}"
+
+
+class UsuarioComum(Pessoa):
+    def __init__(self, nome, idade, _num_matricula):
+        super().__init__(nome, idade, _num_matricula)
+        self.livros_emprestados = []
     
-    
-class Adm(Pessoa, Livro):
-    def __init__(self, nome, idade, _num_matricula,_senha):
+    #def __str__(self):
+        #return super().__str__()
+
+    def emprestimo(self, livro):
+        if livro.status_disponibilidade == "disponivel":
+            livro.status_disponibilidade = "Emprestado"
+            self.livros_emprestados.append(livro)
+            return f"Livro {livro.titulo} emprestado para {self.nome}"
+        else:
+            return f"Livro não disponível para empréstimo"
+class Adm(Pessoa):
+    def __init__(self, nome, idade, _num_matricula, _senha):
         super().__init__(nome, idade, _num_matricula)
         self._senha = _senha
-          
-    #def __str__(self):
-     #   return super().__str__() + f"a senha do ADM é{self._senha}:"
-      
-    
-    def cadastrar_livro(self, titulo, autor, ano_publi, status_disponibilidade):
-        self.titulo = titulo
-        self.autor = autor
-        self.ano_publi = ano_publi
-        self.status_disponibilidade = status_disponibilidade
-        return f"Livro {self.titulo} cadastrado com sucesso!!"
-    def cadastrar_users(self,nome, idade, _num_matricula):
-        self.nome = nome
-        self.idade = idade
-        self._num_matricula = _num_matricula
-        return f"usuário {self.nome} cadastrado com sucesso!!"
-    def cad_emprestimo(self, nome, titulo):
-        self.nome = nome
-        self.titulo = titulo
-        return f"Livro: {self.titulo} emprestado para o usuário {self.nome}"
-    
-        
-        
+        self.usuarios = []  # Lista para armazenar usuários cadastrados
+        self.livros = []    # Lista para armazenar livros cadastrados
+
+    def cadastrar_usuario(self, nome, idade, _num_matricula):
+        novo_usuario = UsuarioComum(nome, idade, _num_matricula)
+        self.usuarios.append(novo_usuario)
+        return f"Usuário {nome} cadastrado com sucesso!"
+
+    def cadastrar_livro(self, titulo, autor, ano_publi, status_disponibilidade="disponivel"):
+        novo_livro = Livro(titulo, autor, ano_publi, status_disponibilidade)
+        self.livros.append(novo_livro)
+        return f"Livro {titulo} cadastrado com sucesso!"
+
+    def listar_usuarios(self):
+        if self.usuarios:
+            print("Usuários cadastrados:")
+            for usuario in self.usuarios:
+                print(f"Nome: {usuario.nome}, Idade: {usuario.idade}, Matrícula: {usuario._num_matricula}")
+        else:
+            print("Nenhum usuário cadastrado.")
+
+    def listar_livros(self):
+        if self.livros:
+            print("Livros cadastrados:")
+            for livro in self.livros:
+                print(f"Título: {livro.titulo}, Autor: {livro.autor}, Ano: {livro.ano_publi}, Status: {livro.status_disponibilidade}")
+        else:
+            print("Nenhum livro cadastrado.")
 
 
-adm1 = Adm("Railson",19, 102552, 123456)
-cad_li1 = adm1.cadastrar_livro("O senhor dos anéis", "J. R. R. Tolkien",1954, "livre")
-cad_user1 = adm1.cadastrar_users("Wellington", 35, 102655)
-cad_empres1 = adm1.cad_emprestimo("Wellington", "O senhor dos anéis")
-print(cad_li1,"\n", cad_user1, "\n", cad_empres1)
+# Instanciando o administrador
+adm1 = Adm("Administrador", 35, 562507, "senha1234" )
 
-#l1 = Livro("O senhor dos anéis", "J. R. R. Tolkien",1954, "livre")
-#print(l1)
+# Cadastrando usuários
+print(adm1.cadastrar_usuario("Railson", 19, 562508))
+print(adm1.cadastrar_usuario("Wellington", 32, 562509))
+
+# Cadastrando livros
+print(adm1.cadastrar_livro("O Senhor dos Anéis", "J. R. R. Tolkien", 1954))
+print(adm1.cadastrar_livro("1984", "George Orwell", 1949))
+
+# Listando todos os usuários e livros cadastrados
+adm1.listar_usuarios()
+adm1.listar_livros()
+
+# Emprestando um livro
+usuario1 = adm1.usuarios[0]  # Selecionando o primeiro usuário
+livro1 = adm1.livros[0]      # Selecionando o primeiro livro
+print(usuario1.emprestimo(livro1))
+
+# Verificando o status dos livros após o empréstimo
+adm1.listar_livros()
