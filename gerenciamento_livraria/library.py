@@ -100,7 +100,7 @@ print("\n")
 adm1.listar_livros()
 print("\n")
 
-# Selecionand os usuários
+# Selecionando os usuários
 usuario1 = UsuarioComum.usuarios_cadastrados[0]  
 usuario2 = UsuarioComum.usuarios_cadastrados[1]
 usuario3 = UsuarioComum.usuarios_cadastrados[2]
